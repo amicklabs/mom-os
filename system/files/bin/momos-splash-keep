@@ -1,0 +1,17 @@
+#!/bin/bash
+# MomOS: set the boot splash back to "momos" after an omarchy-settings upgrade
+# reset /etc/plymouth/plymouthd.conf to Omarchy's, and rebuild the boot image
+# the way Omarchy does. Run by /etc/pacman.d/hooks/95-momos-splash.hook.
+# Installed by system/install.sh, step "splash".
+set -euo pipefail
+
+[[ -f /usr/share/plymouth/themes/momos/momos.plymouth ]] || exit 0
+[[ $(plymouth-set-default-theme) != momos ]] || exit 0
+
+echo "MomOS: setting the boot splash back to momos"
+plymouth-set-default-theme momos
+if command -v limine-mkinitcpio >/dev/null; then
+  limine-mkinitcpio
+else
+  mkinitcpio -P
+fi

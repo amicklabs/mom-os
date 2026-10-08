@@ -1,0 +1,14 @@
+// MomOS: the person's account may restart and turn off the computer without a
+// password, even while other sessions are open (the admin over SSH, say).
+// momd runs `systemctl reboot` for the helper's Restart action, and her
+// Restart and Turn off pages under More run `momctl power restart|off`. Only
+// the org.freedesktop.login1.reboot* and power-off* actions (each with its
+// -multiple-sessions and -ignore-inhibit variants), and only for this one
+// user. Installed by system/install.sh, step "user".
+polkit.addRule(function (action, subject) {
+  if (subject.user == "@PERSON_USER@" &&
+      (action.id.indexOf("org.freedesktop.login1.reboot") == 0 ||
+       action.id.indexOf("org.freedesktop.login1.power-off") == 0)) {
+    return polkit.Result.YES;
+  }
+});

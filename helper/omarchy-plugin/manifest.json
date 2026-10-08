@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "momos.status",
+  "name": "MomOS",
+  "version": "0.1.0",
+  "author": "MomOS",
+  "license": "MIT",
+  "description": "Shows whether a MomOS laptop is online, asking for help, or being worked on by an agent. The panel has the latest screenshot and buttons to view the screen, start an investigation, approve a fix, or send a message to the screen. Needs the MomOS dispatcher running on this machine.",
+  "kinds": ["bar-widget"],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "MomOS",
+    "description": "The person's laptop at a glance, through the MomOS dispatcher.",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}

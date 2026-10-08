@@ -1,0 +1,15 @@
+# Input injection for `momctl click/type/key`. Needs read-write on
+# /dev/uinput, which the uinput group gets from
+# /etc/udev/rules.d/90-momos-uinput.rules. The socket path matches
+# YDOTOOL_SOCKET in ~/.config/environment.d/50-momos.conf.
+[Unit]
+Description=MomOS input injection daemon (ydotoold)
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ydotoold --socket-path=%t/.ydotool_socket --socket-perm=0600
+Restart=always
+RestartSec=5
+Slice=app-graphical.slice

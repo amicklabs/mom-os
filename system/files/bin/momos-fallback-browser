@@ -1,0 +1,10 @@
+#!/bin/bash
+# Last resort when the MomOS shell keeps crashing (docs/contracts.md, "Rule
+# one"). Started by momos-shell.service's OnFailure= after systemd gives up
+# restarting the shell. Opens Chromium full screen so she still has the web.
+#
+# The helper brings the shell back with `momctl restart shell` (or
+# `systemctl --user reset-failed momos-shell && systemctl --user start momos-shell`).
+set -euo pipefail
+
+exec chromium --start-fullscreen --no-first-run "${1:-https://www.google.com}"

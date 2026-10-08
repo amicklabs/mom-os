@@ -1,0 +1,8 @@
+# MomOS units for the person's session. Started by momos-session-start from
+# her Hyprland config, so it never starts in the admin's Omarchy session.
+[Unit]
+Description=MomOS session (shell, momd, wayvnc, Telegram)
+Documentation=file:///usr/local/src/momos/system/README.md
+BindsTo=graphical-session.target
+After=graphical-session.target
+Wants=momos-shell.service momd.service momos-wayvnc.service momos-ydotoold.service momos-telegram.service momos-idle.service

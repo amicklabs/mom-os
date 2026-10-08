@@ -1,0 +1,9 @@
+node_modules/
+.env*
+!.env.example
+config/*.jsonc
+!config/example.jsonc
+.next/
+dist/
+.claude/worktrees/
+.vercel

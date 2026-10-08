@@ -1,0 +1,74 @@
+name: Bug report
+description: Something in MomOS doesn't work the way the docs say it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Before you paste anything, remove personal details: names, phone numbers, Telegram usernames, hostnames, Tailscale addresses and anything from her screen you wouldn't want public.
+
+        A security problem goes through private reporting instead. See SECURITY.md.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: dropdown
+    id: part
+    attributes:
+      label: Which part
+      multiple: true
+      options:
+        - The shell on the laptop (home screen, bar, banners)
+        - momd or momctl
+        - mom (helper's command-line tool)
+        - Convex backend
+        - Telegram bot
+        - Admin app
+        - Dispatcher and agents
+        - Install script or system files
+        - Bar widget (helper/omarchy-plugin)
+        - Docs
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: omarchy
+    attributes:
+      label: Omarchy version
+      description: "`omarchy-version`, or the version shown in Omarchy's About screen."
+    validations:
+      required: true
+  - type: input
+    id: hyprland
+    attributes:
+      label: Hyprland version
+      description: "First line of `hyprctl version`."
+    validations:
+      required: true
+  - type: input
+    id: laptop
+    attributes:
+      label: Laptop model
+      description: For example "MacBook Air 11-inch, mid-2013" or "ThinkPad T440s".
+    validations:
+      required: true
+  - type: textarea
+    id: status
+    attributes:
+      label: "`mom status --json`"
+      description: Remove names, the hostname, Tailscale addresses and window titles that show personal details before pasting.
+      render: json
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: "From `mom logs --unit momd`, `mom logs --unit shell` or `mom logs --unit wayvnc`, whichever fits. Same rule about personal details."
+      render: text
+  - type: textarea
+    id: more
+    attributes:
+      label: Anything else
+      description: Screenshots, config snippets (no tokens), or what you already tried.

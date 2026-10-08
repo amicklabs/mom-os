@@ -1,0 +1,6 @@
+# The 2013 MacBook Air trackpad (bcm5974, USB 05ac:0290) is built in, but the
+# USB port it hangs off reads as removable. udev then tags it external, and
+# libinput skips disable-while-typing and palm detection on external
+# touchpads. Mark it internal. Matches only this vendor and product.
+touchpad:usb:v05acp0290:*
+ ID_INPUT_TOUCHPAD_INTEGRATION=internal

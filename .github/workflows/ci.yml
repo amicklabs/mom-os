@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  node:
+    name: Typecheck, test, lint, build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      # The pnpm version comes from "packageManager" in package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # packages/shared runs its tests with `bun test`, and momd, momctl, mom
+      # and the dispatcher run on Bun.
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm -r typecheck
+
+      - run: pnpm -r test
+
+      - name: Lint the admin app
+        run: pnpm --filter @momos/admin run --if-present lint
+
+      # The admin app builds without any environment variables. It shows a
+      # setup page at runtime when they're missing.
+      - name: Build the admin app
+        run: pnpm --filter @momos/admin build
+
+  shell-scripts:
+    name: Shellcheck
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      # shellcheck comes with the runner image. Checks every tracked *.sh file
+      # and every tracked file with a sh or bash shebang, such as
+      # system/files/bin/* and shell/dev/momctl.
+      - name: Run shellcheck
+        run: |
+          shellcheck --version
+          files=()
+          while IFS= read -r -d '' f; do
+            [[ -f "$f" ]] || continue
+            if [[ "$f" == *.sh ]] || head -n1 "$f" | grep -qE '^#!.*\b(ba)?sh\b'; then
+              files+=("$f")
+            fi
+          done < <(git ls-files -z)
+          printf '%s\n' "${files[@]}"
+          shellcheck "${files[@]}"
+
+  # No qmllint job. The shell imports Quickshell modules, and Quickshell isn't
+  # packaged for Ubuntu (24.04 ships Qt 6.4; Quickshell needs 6.6 or later and
+  # would have to be built from source on every run). Even on Arch with
+  # Quickshell's qmltypes installed, qmllint can't resolve the shell's own
+  # `qs.Common` imports and prints hundreds of false "unqualified access"
+  # warnings. Test the shell by running it: `shell/dev/run.sh` or
+  # `dev/session.sh`.

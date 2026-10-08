@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Stand-in for momctl in the dev session, used until apps/momctl/dist/momctl
+# is built. Logs its arguments to $MOMOS_DEV_DIR/momctl.log and prints
+# {"ok":true}. Set MOMOS_STUB_FAIL=1 to make every call fail. `wifi ...`
+# answers with made-up networks from shell/dev/wifi-fake.sh, and `speaker ...`
+# with made-up speakers from shell/dev/speaker-fake.sh. `screen on|off` turns
+# the nested session's screen on or off.
+log="${MOMOS_DEV_DIR:-/tmp/momos-session}/momctl.log"
+mkdir -p "$(dirname "$log")"
+printf '%s momctl %s\n' "$(date +%T)" "$*" >>"$log"
+if [[ -n "${MOMOS_STUB_FAIL:-}" ]]; then
+  echo '{"ok":false,"error":"stub failure"}'
+  exit 1
+fi
+if [[ "${1:-}" == speaker ]]; then
+  shift
+  exec "$(dirname "$0")/../shell/dev/speaker-fake.sh" "$@"
+fi
+if [[ "${1:-}" == wifi ]]; then
+  shift
+  exec "$(dirname "$0")/../shell/dev/wifi-fake.sh" "$@"
+fi
+# The Help pop-up reads momd's answer. $MOMOS_DEV_DIR/help-status picks it:
+# sent (the default), offline or failed.
+if [[ "${1:-}" == help ]]; then
+  sleep 1
+  status=$(cat "${MOMOS_DEV_DIR:-/tmp/momos-session}/help-status" 2>/dev/null || echo sent)
+  printf '{"ok":true,"data":{"status":"%s","kinds":[],"freshScreenshot":false,"voiceSeconds":null,"note":null,"queued":0}}\n' "$status"
+  exit 0
+fi
+if [[ "${1:-} ${2:-}" == "voice start" ]]; then
+  printf '{"ok":true,"data":{"recording":true,"startedAt":%s,"maxSeconds":60}}\n' "$(date +%s000)"
+  exit 0
+fi
+# The nested Hyprland's screen, so waking it for a message can be tried.
+if [[ "${1:-}" == screen && ( "${2:-}" == on || "${2:-}" == off ) ]]; then
+  hyprctl dispatch "hl.dsp.dpms({ action = \"$2\" })" >/dev/null
+  printf '{"ok":true,"data":{"screen":"%s"}}\n' "$2"
+  exit 0
+fi
+echo '{"ok":true}'

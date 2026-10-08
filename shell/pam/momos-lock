@@ -1,0 +1,6 @@
+#%PAM-1.0
+# PAM service for the MomOS lock screen. It checks the person's own password
+# (her PIN) and nothing else. No faillock: a lockout would strand someone who
+# forgets, and the helper can always unlock remotely.
+auth     required  pam_unix.so
+account  required  pam_unix.so

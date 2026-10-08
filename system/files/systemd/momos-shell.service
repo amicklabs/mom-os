@@ -1,0 +1,30 @@
+# The MomOS shell (Quickshell). Restarts on every exit. If it fails 5 times in
+# 2 minutes, systemd gives up and OnFailure= opens Chromium full screen.
+[Unit]
+Description=MomOS shell
+PartOf=graphical-session.target
+After=graphical-session.target
+StartLimitIntervalSec=120
+StartLimitBurst=5
+OnFailure=momos-fallback.service
+
+[Service]
+Type=simple
+Environment=QS_NO_RELOAD_POPUP=1
+# Always be her notification server (Windows/Notifications.qml). Without it
+# the shell checks for another server at startup, and a stray one would leave
+# her Telegram messages unseen.
+Environment=MOMOS_NOTIFICATIONS=1
+# "-c momos" resolves /etc/xdg/quickshell/momos, a symlink to
+# /usr/local/share/momos/shell. Quickshell matches IPC clients by the path it
+# was launched with, so this has to be -c for `qs -c momos ipc call ...`
+# (docs/contracts.md) to find it.
+ExecStart=/usr/bin/qs -c momos
+Restart=always
+RestartSec=2
+# Restart without passing through "failed", so OnFailure= fires only when the
+# start limit is hit, not on every crash.
+RestartMode=direct
+# When the shell comes back, close the fallback browser.
+ExecStartPost=-/usr/bin/systemctl --user --no-block stop momos-fallback.service
+Slice=app-graphical.slice

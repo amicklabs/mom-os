@@ -1,0 +1,55 @@
+name: Hardware notes for a new laptop model
+description: You ran MomOS on a laptop model it hasn't been tried on. Share what worked and what needed a workaround.
+labels: [hardware]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        docs/setup/02-hardware.md lists what to test. Notes from a model that worked fine are just as useful as notes from one that didn't.
+  - type: input
+    id: model
+    attributes:
+      label: Laptop model and year
+      placeholder: Dell Latitude E7450, 2015
+    validations:
+      required: true
+  - type: input
+    id: screen
+    attributes:
+      label: Screen resolution and scale
+      placeholder: 1920x1080 at 1.25
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Omarchy, kernel and Hyprland versions
+      placeholder: Omarchy 4.0.4, linux-omarchy 7.2, Hyprland 0.56
+    validations:
+      required: true
+  - type: textarea
+    id: results
+    attributes:
+      label: What you tested
+      description: One line each. Say what worked, what didn't and which driver it uses.
+      value: |
+        - Wi-Fi:
+        - Camera:
+        - Speakers and mic:
+        - Sleep and wake:
+        - Lid switch:
+        - Battery:
+        - Screen (do the tiles and text fit?):
+    validations:
+      required: true
+  - type: textarea
+    id: hardware-config
+    attributes:
+      label: "`local.hardware` in your config"
+      render: jsonc
+      placeholder: '"hardware": { "dkmsModules": ["wl"] }'
+  - type: textarea
+    id: workarounds
+    attributes:
+      label: Workarounds
+      description: Anything you had to change, install from the AUR, or write into MACHINE-NOTES.md.

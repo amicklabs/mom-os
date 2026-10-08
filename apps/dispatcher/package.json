@@ -1,0 +1,18 @@
+{
+  "name": "@momos/dispatcher",
+  "version": "0.1.0",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun build --compile --minify src/main.ts --outfile dist/momos-dispatcher",
+    "start": "bun src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "convex": "^1.46.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": { "@types/bun": "latest", "typescript": "^5.9.0" }
+}

@@ -1,0 +1,14 @@
+# MomOS: every omarchy-settings install or upgrade copies Omarchy's
+# plymouthd.conf over /etc/plymouth/plymouthd.conf, which puts the Omarchy
+# boot splash back. This puts the MomOS splash back afterwards. Installed by
+# system/install.sh, step "splash"; removed by "splash-omarchy".
+[Trigger]
+Type = Package
+Operation = Install
+Operation = Upgrade
+Target = omarchy-settings
+
+[Action]
+Description = Keeping the MomOS boot splash...
+When = PostTransaction
+Exec = /usr/local/lib/momos/momos-splash-keep

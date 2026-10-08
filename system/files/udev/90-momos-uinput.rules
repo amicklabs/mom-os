@@ -1,0 +1,5 @@
+# MomOS: let the "uinput" group create virtual input devices, so ydotoold can
+# run as the person's user instead of root (momctl click/type/key).
+# Sorts after ydotool's 80-uinput.rules, which hands /dev/uinput to "input";
+# that group can also read every keyboard, so MomOS doesn't use it.
+KERNEL=="uinput", SUBSYSTEM=="misc", GROUP:="uinput", MODE:="0660", OPTIONS+="static_node=uinput"

@@ -1,0 +1,24 @@
+#!/bin/bash
+# Started once by the person's Hyprland config on "hyprland.start".
+# Hands the Wayland environment to systemd and D-Bus, then starts the MomOS
+# user units (momos-session.target).
+set -euo pipefail
+
+vars=(
+  WAYLAND_DISPLAY
+  HYPRLAND_INSTANCE_SIGNATURE
+  XDG_CURRENT_DESKTOP
+  XDG_SESSION_TYPE
+  XDG_SESSION_DESKTOP
+  XCURSOR_THEME
+  XCURSOR_SIZE
+  HYPRCURSOR_SIZE
+  GDK_BACKEND
+  QT_QPA_PLATFORM
+  ELECTRON_OZONE_PLATFORM_HINT
+  OZONE_PLATFORM
+)
+
+systemctl --user import-environment "${vars[@]}"
+dbus-update-activation-environment --systemd "${vars[@]}" || true
+exec systemctl --user start momos-session.target

@@ -1,0 +1,15 @@
+# Screen sharing for the helper. Listens on the Tailscale address, or on
+# 127.0.0.1 while Tailscale is down. The control socket is wayvnc's default,
+# $XDG_RUNTIME_DIR/wayvncctl, which momd follows with `wayvncctl event-receive`.
+[Unit]
+Description=MomOS screen sharing (wayvnc)
+PartOf=graphical-session.target
+After=graphical-session.target
+ConditionPathExists=%h/.config/wayvnc/config
+
+[Service]
+Type=simple
+ExecStart=/usr/local/lib/momos/momos-wayvnc
+Restart=always
+RestartSec=5
+Slice=app-graphical.slice

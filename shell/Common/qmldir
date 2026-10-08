@@ -1,0 +1,9 @@
+module qs.Common
+singleton Theme 1.0 Theme.qml
+singleton Store 1.0 Store.qml
+singleton Session 1.0 Session.qml
+singleton Appearance 1.0 Appearance.qml
+singleton Wifi 1.0 Wifi.qml
+singleton Power 1.0 Power.qml
+singleton Speaker 1.0 Speaker.qml
+singleton Foreground 1.0 Foreground.qml

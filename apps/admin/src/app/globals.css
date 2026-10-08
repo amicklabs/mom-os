@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  @apply bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input,
+textarea,
+select {
+  @apply rounded-lg border border-stone-300 bg-white px-3 py-2 text-base dark:border-stone-700 dark:bg-stone-900;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  @apply outline-2 outline-offset-1 outline-sky-500;
+}

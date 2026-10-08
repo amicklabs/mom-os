@@ -1,0 +1,21 @@
+# Telegram, started hidden. Her session has no system tray, so closing
+# Telegram's window (it draws its own close button) quits it, and then no
+# message or call would reach her. So it always comes back, hidden again.
+#
+# It starts after the shell, which is her notification server, and after the
+# sound services, so its first messages and calls have somewhere to go. The
+# shell takes a moment to claim org.freedesktop.Notifications, so ExecStartPre
+# waits for that, 30 seconds at most, and never fails the unit: Telegram
+# without notifications is better than no Telegram.
+[Unit]
+Description=MomOS Telegram (background)
+PartOf=graphical-session.target
+After=graphical-session.target momos-shell.service pipewire-pulse.service wireplumber.service
+
+[Service]
+Type=simple
+ExecStartPre=-/usr/bin/timeout 30 /bin/sh -c 'until busctl --user status org.freedesktop.Notifications >/dev/null 2>&1; do sleep 1; done'
+ExecStart=/usr/bin/Telegram -startintray
+Restart=always
+RestartSec=5
+Slice=app-graphical.slice

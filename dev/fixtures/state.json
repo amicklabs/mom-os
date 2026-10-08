@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "updatedAt": 0,
+  "online": true,
+  "wifi": { "ssid": "Home", "signal": 70 },
+  "battery": { "percent": 64, "charging": false },
+  "viewer": { "connected": false, "since": null },
+  "help": { "status": "idle", "at": null },
+  "banner": null,
+  "lid": { "closed": false },
+  "convex": "connected"
+}

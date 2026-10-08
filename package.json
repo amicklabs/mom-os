@@ -1,0 +1,10 @@
+{
+  "name": "momos",
+  "license": "MIT",
+  "private": true,
+  "packageManager": "pnpm@10.18.0",
+  "scripts": {
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test"
+  }
+}

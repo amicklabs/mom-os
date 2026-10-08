@@ -1,0 +1,15 @@
+# Idle rules: screensaver after 3 minutes, screen off after 15, sleep after
+# 30. Rules in ~/.config/hypr/hypridle.conf, actions in
+# /usr/local/lib/momos/momos-idle.
+[Unit]
+Description=MomOS idle (hypridle)
+PartOf=graphical-session.target
+After=graphical-session.target
+ConditionPathExists=%h/.config/hypr/hypridle.conf
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/hypridle -q -c %h/.config/hypr/hypridle.conf
+Restart=always
+RestartSec=5
+Slice=app-graphical.slice

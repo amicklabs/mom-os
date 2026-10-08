@@ -1,0 +1,13 @@
+module qs.Ui
+Avatar 1.0 Avatar.qml
+Backdrop 1.0 Backdrop.qml
+BigButton 1.0 BigButton.qml
+Card 1.0 Card.qml
+ChoiceCard 1.0 ChoiceCard.qml
+Icon 1.0 Icon.qml
+Surface 1.0 Surface.qml
+ThemePreview 1.0 ThemePreview.qml
+Tile 1.0 Tile.qml
+TileIcon 1.0 TileIcon.qml
+PowerKey 1.0 PowerKey.qml
+BatteryIcon 1.0 BatteryIcon.qml

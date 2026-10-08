@@ -1,0 +1,31 @@
+// Copy this to your own machine, outside the repo, and point
+// devices.<name>.configFile in mom.json at it. `mom deploy` copies it to
+// /etc/momos/config.json on the laptop, and the first deploy copies that to her
+// ~/.config/momos/config.json as plain JSON. After that the admin app edits her
+// live copy, and later deploys only update local.hardware in it.
+//
+// local.hardware describes the laptop. This one is for a 2013 MacBook Air:
+// "dkmsModules" lists the DKMS drivers `mom update` and `momctl health` check,
+// and "lid": "flaky-macbook" turns on momd's handling of its broken lid switch.
+// Leave the block out on a laptop with no DKMS drivers and a working lid.
+{
+  "person": { "name": "Mom", "user": "mom" },
+  "helper": { "name": "Sam", "phone": "555-555-0100" },
+  "tiles": [
+    { "id": "family",   "label": "Family",   "icon": "family",   "type": "page",   "page": "family" },
+    { "id": "telegram", "label": "Telegram", "icon": "telegram", "type": "app",    "app": "telegram" },
+    { "id": "youtube",  "label": "YouTube",  "icon": "youtube",  "type": "webapp", "url": "https://www.youtube.com" },
+    { "id": "facebook", "label": "Facebook", "icon": "facebook", "type": "webapp", "url": "https://www.facebook.com" },
+    { "id": "email",    "label": "Email",    "icon": "email",    "type": "webapp", "url": "https://mail.google.com" },
+    { "id": "photos",   "label": "Photos",   "icon": "photos",   "type": "webapp", "url": "https://photos.google.com" },
+    { "id": "internet", "label": "Browser",  "icon": "internet", "type": "app",    "app": "chromium" }
+  ],
+  "family": [
+    { "id": "lucy", "name": "Lucy", "photo": "lucy.jpg", "telegram": "example_user" }
+  ],
+  "local": {
+    "convexUrl": null,
+    "deviceTokenFile": null,
+    "hardware": { "dkmsModules": ["wl", "facetimehd"], "lid": "flaky-macbook" }
+  }
+}

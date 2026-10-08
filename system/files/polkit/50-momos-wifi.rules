@@ -1,0 +1,23 @@
+// MomOS: the person's account may scan for Wi-Fi networks, join them and save
+// them for everyone, with no password prompt. Her "Internet connection" page
+// runs `momctl wifi connect` as her, and she has no admin rights to answer a
+// prompt with. NetworkManager's own policy asks for an admin password to save
+// a system-wide network (settings.modify.system), and a system-wide network
+// is what rejoins on its own after a restart.
+//
+// Only these NetworkManager actions, and only for this one user. Not limited
+// to her local session, so the helper can add a network for her remotely with
+// `mom wifi connect`, which runs as her over SSH. Installed by
+// system/install.sh, step "user".
+polkit.addRule(function (action, subject) {
+  if (subject.user != "@PERSON_USER@") return polkit.Result.NOT_HANDLED;
+  var allowed = [
+    "org.freedesktop.NetworkManager.network-control",
+    "org.freedesktop.NetworkManager.settings.modify.own",
+    "org.freedesktop.NetworkManager.settings.modify.system",
+    "org.freedesktop.NetworkManager.wifi.scan",
+    "org.freedesktop.NetworkManager.enable-disable-wifi"
+  ];
+  if (allowed.indexOf(action.id) >= 0) return polkit.Result.YES;
+  return polkit.Result.NOT_HANDLED;
+});

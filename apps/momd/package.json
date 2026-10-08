@@ -1,0 +1,19 @@
+{
+  "name": "@momos/momd",
+  "version": "0.1.0",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun build --compile --minify --sourcemap src/main.ts --outfile dist/momd",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@momos/momctl": "workspace:*",
+    "@momos/shared": "workspace:*",
+    "convex": "^1.46.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": { "@types/bun": "latest", "typescript": "^5.9.0" }
+}

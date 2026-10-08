@@ -1,0 +1,13 @@
+# Last resort when momos-shell.service has given up. See docs/contracts.md,
+# "Rule one".
+[Unit]
+Description=MomOS fallback browser (the shell is down)
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/lib/momos/momos-fallback-browser
+Restart=on-failure
+RestartSec=5
+Slice=app-graphical.slice

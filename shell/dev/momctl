@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Stand-in for momctl during shell development. Logs its arguments and
+# succeeds, unless MOMOS_STUB_FAIL is set. `wifi ...` answers with made-up
+# networks from wifi-fake.sh, and `speaker ...` with made-up speakers from
+# speaker-fake.sh.
+log="${MOMOS_DEV_DIR:-/tmp/momos-dev}/momctl.log"
+mkdir -p "$(dirname "$log")"
+printf '%s momctl %s\n' "$(date +%T)" "$*" >>"$log"
+if [[ -n "${MOMOS_STUB_FAIL:-}" ]]; then
+  echo '{"ok":false,"error":"stub failure"}'
+  exit 1
+fi
+if [[ "${1:-}" == speaker ]]; then
+  shift
+  exec "$(dirname "$0")/speaker-fake.sh" "$@"
+fi
+if [[ "${1:-}" == wifi ]]; then
+  shift
+  exec "$(dirname "$0")/wifi-fake.sh" "$@"
+fi
+echo '{"ok":true}'

@@ -1,0 +1,30 @@
+{
+  "name": "@momos/backend",
+  "version": "0.1.0",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./convex/_generated/api": "./convex/_generated/api.js",
+    "./convex/_generated/dataModel": "./convex/_generated/dataModel.d.ts",
+    "./convex/_generated/server": "./convex/_generated/server.js"
+  },
+  "scripts": {
+    "dev": "convex dev",
+    "push": "convex dev --once",
+    "typecheck": "tsc --noEmit -p convex",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@momos/shared": "workspace:*",
+    "convex": "^1.46.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@edge-runtime/vm": "^5.0.0",
+    "@types/node": "^22.20.4",
+    "convex-test": "^0.0.60",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.2"
+  }
+}

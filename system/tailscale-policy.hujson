@@ -1,0 +1,39 @@
+// MomOS tailnet policy. Paste into the Tailscale admin console
+// (Access controls), merging with anything already there.
+//
+// The laptop joins with `--advertise-tags=tag:momos`, so it belongs to the tag
+// and gets none of the helper's own access. The helper's devices can reach
+// its SSH and VNC ports, and HTTPS for screen sharing in the admin app
+// (Tailscale Serve, set up by `install.sh web-screen`). Nothing lets
+// tag:momos reach anything.
+//
+// After the laptop joins, turn off key expiry for its node in the Machines
+// page, so it doesn't drop off the tailnet after six months.
+{
+  "tagOwners": {
+    "tag:momos": ["autogroup:admin"],
+  },
+
+  "grants": [
+    // The helper's devices can reach her SSH, VNC and HTTPS ports. 443 is
+    // Tailscale Serve for screen sharing in a browser; drop it to turn that
+    // off for every device at once.
+    {
+      "src": ["autogroup:member"],
+      "dst": ["tag:momos"],
+      "ip":  ["tcp:22", "tcp:5900", "tcp:443"],
+    },
+    // Your own devices reaching each other. This replaces the default
+    // allow-all grant ("src": ["*"], "dst": ["*"]), which would also let
+    // tag:momos reach your machines. Remove that one. Never add a grant with
+    // "src": ["tag:momos"] or "src": ["*"].
+    {
+      "src": ["autogroup:member"],
+      "dst": ["autogroup:member"],
+      "ip":  ["*"],
+    },
+  ],
+
+  // OpenSSH is used, not Tailscale SSH (`tailscale up --ssh=false`), so no
+  // "ssh" section is needed for tag:momos.
+}

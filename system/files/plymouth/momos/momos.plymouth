@@ -1,0 +1,11 @@
+[Plymouth Theme]
+Name=MomOS
+Description=MomOS boot splash: MOM OS on a warm dark background. Based on Omarchy's theme.
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/momos
+ScriptFile=/usr/share/plymouth/themes/momos/momos.script
+ConsoleLogBackgroundColor=0x1f1a16
+MonospaceFont=Cantarell 11
+Font=Cantarell 11

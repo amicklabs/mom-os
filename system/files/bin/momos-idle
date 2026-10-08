@@ -1,0 +1,76 @@
+#!/bin/bash
+# Actions for hypridle in the person's session (~/.config/hypr/hypridle.conf).
+#
+#   momos-idle screensaver-on|screensaver-off|screen-off|screen-on|suspend|on-ac
+#
+# momd owns the lid. While its state.json says the lid is closed, the screen
+# stays off and this never suspends; momd suspends after 30 minutes closed.
+# "suspend" only suspends on battery. On AC power the screen stays off but the
+# laptop stays awake, so the helper can reach it remotely. It doesn't suspend
+# while the helper's updating marker is fresh either.
+set -uo pipefail
+
+state=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/momos/state.json
+
+lid_closed() {
+  [[ -r $state ]] && [[ $(jq -r '.lid.closed // false' "$state" 2>/dev/null) == true ]]
+}
+
+# True when an AC adapter (power supply of type Mains) reports online. On AC
+# the laptop never suspends from idle, so the helper can always reach it.
+# $MOMOS_POWER_SUPPLY_DIR is for tests.
+on_ac() {
+  local dir=${MOMOS_POWER_SUPPLY_DIR:-/sys/class/power_supply} ps
+  for ps in "$dir"/*; do
+    [[ -r $ps/type && -r $ps/online ]] || continue
+    [[ $(<"$ps/type") == Mains && $(<"$ps/online") == 1 ]] && return 0
+  done
+  return 1
+}
+
+# True while the helper's `mom deploy` or `mom update` runs: its marker says
+# "updating" and expires within 20 minutes (a marker claiming longer is
+# ignored, as the shell does). Suspending then would cut him off mid-update.
+# $MOMOS_UPDATING is for tests.
+updating() {
+  local file=${MOMOS_UPDATING:-$HOME/.local/state/momos/updating.json} now
+  [[ -r $file ]] || return 1
+  now=$(($(date +%s) * 1000))
+  jq -e --argjson now "$now" \
+    '.state == "updating" and (.expiresAt | type) == "number"
+     and .expiresAt > $now and .expiresAt - $now <= 1200000' "$file" >/dev/null 2>&1
+}
+
+dpms() {
+  hyprctl dispatch "hl.dsp.dpms({ action = \"$1\" })" >/dev/null
+}
+
+case ${1:-} in
+  screensaver-on) exec momctl screensaver on ;;
+  screensaver-off) exec momctl screensaver off ;;
+  screen-off) dpms off ;;
+  screen-on)
+    lid_closed && exit 0
+    dpms on
+    ;;
+  suspend)
+    lid_closed && exit 0
+    if on_ac; then
+      echo "momos-idle: on AC power, not suspending" >&2
+      exit 0
+    fi
+    if updating; then
+      echo "momos-idle: the helper is updating the laptop, not suspending" >&2
+      exit 0
+    fi
+    exec systemctl suspend
+    ;;
+  on-ac)
+    # For checking by hand: exit 0 on AC power, 1 on battery.
+    on_ac
+    ;;
+  *)
+    echo "usage: momos-idle screensaver-on|screensaver-off|screen-off|screen-on|suspend|on-ac" >&2
+    exit 2
+    ;;
+esac
