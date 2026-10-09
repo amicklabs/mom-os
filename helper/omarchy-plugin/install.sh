@@ -19,7 +19,8 @@ shell_json="$config/shell.json"
 
 backup() {
   if [[ -f $shell_json ]]; then
-    local b="$shell_json.bak.momos.$(date +%Y%m%d-%H%M%S)"
+    local b
+    b="$shell_json.bak.momos.$(date +%Y%m%d-%H%M%S)"
     cp -p "$shell_json" "$b"
     echo "Backed up shell.json to $b"
   fi
